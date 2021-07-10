@@ -35,18 +35,38 @@ public class Swipe extends AndroidNonvisibleComponent {
     private Context context;
     private Activity activity;
     private SwipeLayout swipeLayout;
+    private String showMode;
     public Swipe(ComponentContainer container){
         super(container.$form());
         this.activity = container.$context();
         this.context = container.$context();
+        this.showMode = "PullOut";
     }
+ @SimpleProperty
+ public void ShowMode(String showModeVal){
+         this.showMode = showModeVal;
+ }
+ @SimpleFunction
+ public String PullOut(){
+         return "PullOut";
+ }
+ @SimpleFunction
+ public String LayDown(){
+         return "LayDown";
+ }
 
 @SimpleFunction()
 public void SetupSwipeLayout(AndroidViewComponent swipeLayoutView){
 SwipeLayout swipeLayout = new SwipeLayout(this.context);
 FrameLayout haha = (FrameLayout) swipeLayoutView.getView();
 haha.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
-swipeLayout.setShowMode(SwipeLayout.DragEdge.Left);
+        //Set Show mode accepts ShowMode which can be either PullOut or Lay Down
+        if(this.showMode == "LayDown"){
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+        }else{
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
+        }
+
 swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
             @Override
             public void onClose(SwipeLayout layout) {
@@ -82,7 +102,7 @@ swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
     @SimpleFunction()
     public void AddAdapter(AndroidViewComponent swipeLayoutAdapter){
 FrameLayout adapter = (FrameLayout) swipeLayoutAdapter.getView();
-swipeLayout.addDrag(SwipeLayout.DragEdge.Left, adapter);
+swipeLayout.addDrag(SwipeLayout.DragEdge.Left, (View) adapter);
 adapter.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
     }
 
