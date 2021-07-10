@@ -36,6 +36,7 @@ public class Swipe extends AndroidNonvisibleComponent {
     private Activity activity;
     private SwipeLayout swipeLayout;
     private String showMode;
+        
     public Swipe(ComponentContainer container){
         super(container.$form());
         this.activity = container.$context();
@@ -57,7 +58,7 @@ public class Swipe extends AndroidNonvisibleComponent {
 
 @SimpleFunction()
 public void SetupSwipeLayout(AndroidViewComponent swipeLayoutView){
-SwipeLayout swipeLayout = new SwipeLayout(this.context);
+ this.swipeLayout = new SwipeLayout(this.context);
 FrameLayout haha = (FrameLayout) swipeLayoutView.getView();
 haha.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
         //Set Show mode accepts ShowMode which can be either PullOut or Lay Down
@@ -101,8 +102,9 @@ swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
     }
     @SimpleFunction()
     public void AddAdapter(AndroidViewComponent swipeLayoutAdapter){
-FrameLayout adapter = (FrameLayout) swipeLayoutAdapter.getView();
-swipeLayout.addDrag(SwipeLayout.DragEdge.Left, (View) adapter);
+View adapter = (View) swipeLayoutAdapter.getView();
+
+this.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, (View) adapter.getChildAt(0));
 adapter.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
     }
 
