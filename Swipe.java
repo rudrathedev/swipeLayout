@@ -1,135 +1,88 @@
 package com.kab.Swipe;
 
-import android.app.Activity;
-import android.content.Context;
-import com.google.appinventor.components.annotations.*;
-import com.google.appinventor.components.common.ComponentCategory;
-import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
-import com.google.appinventor.components.runtime.ComponentContainer;
-import com.google.appinventor.components.runtime.EventDispatcher;
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import com.google.appinventor.components.annotations.*;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import com.daimajia.swipe.SwipeLayout;
+import com.google.appinventor.components.annotations.SimpleFunction;
+import com.google.appinventor.components.annotations.DesignerComponent;
+import com.google.appinventor.components.annotations.SimpleObject;
+import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
+import com.google.appinventor.components.runtime.AndroidViewComponent;
+import com.google.appinventor.components.runtime.ComponentContainer;
+import com.google.appinventor.components.runtime.errors.YailRuntimeError;
+import com.google.appinventor.components.runtime.util.YailList;
 import com.google.appinventor.components.common.ComponentCategory;
-import com.google.appinventor.components.runtime.*;
-import com.daimajia.swipe.*;
-
 
 @DesignerComponent(
-        version = 1,
-        description = "",
-        category = ComponentCategory.EXTENSION,
-        nonVisible = true,
-        iconName = "")
-
+    iconName = "",
+    description = "",
+    version = 1,
+    category = ComponentCategory.EXTENSION,
+    nonVisible = true
+)
 @SimpleObject(external = true)
-//Libraries
-@UsesLibraries(libraries = "AndroidSwipeLayout-v1.1.8.jar, recyclerview.jar")
 
-public class Swipe extends AndroidNonvisibleComponent {
-
+public class SwipeLayoutAndroid extends AndroidNonvisibleComponent {
+    private ComponentContainer container ;
     private Context context;
-    private Activity activity;
-    private SwipeLayout swipeLayout;
-    private String showMode;
-        
-    public Swipe(ComponentContainer container){
-        super(container.$form());
-        this.activity = container.$context();
-        this.context = container.$context();
-        this.showMode = "PullOut";
-    }
- @SimpleProperty
- public void ShowMode(String showModeVal){
-         this.showMode = showModeVal;
- }
- @SimpleFunction
- public String PullOut(){
-         return "PullOut";
- }
- @SimpleFunction
- public String LayDown(){
-         return "LayDown";
- }
 
-@SimpleFunction()
-public void SetupSwipeLayout(AndroidViewComponent swipeLayoutView){
- this.swipeLayout = new SwipeLayout(this.context);
-FrameLayout haha = (FrameLayout) swipeLayoutView.getView();
-haha.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
-        //Set Show mode accepts ShowMode which can be either PullOut or Lay Down
-        if(this.showMode == "LayDown"){
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
-        }else{
-        swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
-        }
+  public SwipeLayoutAndroid(ComponentContainer container) {
+    super(container.$form());
+  }
+  @SimpleFunction
+  public void Do(AndroidViewComponent bottomView , AndroidViewComponent surfaceView){
+      SwipeLayout swipeLayout = new SwipeLayout(container.$context());
 
-swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
-            @Override
-            public void onClose(SwipeLayout layout) {
-                LayoutClosed();
-            }
+      LinearLayout linearLayoutForBottomView = (LinearLayout) bottomView.getView();
+      LinearLayout linearLayoutForSurfaceView = (LinearLayout) surfaceView.getView();
+      swipeLayout.addView(linearLayoutForBottomView , 0);
+      swipeLayout.addView(linearLayoutForSurfaceView , 1 );
 
-            @Override
-            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
-              LayoutUpdated();
-            }
+      // Now we do have both bottom view and surface view
+      // This is layDown , we can also switch to another mode
 
-            @Override
-            public void onStartOpen(SwipeLayout layout) {
-            LayoutStartedOpening();
-            }
+      swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown );
 
-            @Override
-            public void onOpen(SwipeLayout layout) {
-               SwipeLayoutOpened();
-            }
+      // Adding dragEdge either left , right , buttom or top
+      //
 
-            @Override
-            public void onStartClose(SwipeLayout layout) {
-            StartedClosing();
-            }
+      swipeLayout.setDragEdge(SwipeLayout.DragEdge.Left);
 
-            @Override
-            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
-              HandReleased();
-            }
-        });
-    }
-    @SimpleFunction()
-    public void AddAdapter(AndroidViewComponent swipeLayoutAdapter){
-View adapter = (View) swipeLayoutAdapter.getView();
+      swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+          @Override
+          public void onStartOpen(SwipeLayout swipeLayout) {
 
-this.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, (View) adapter.getChildAt(0));
-adapter.addView(swipeLayout, new FrameLayout.LayoutParams(-1, -1));
-    }
+          }
 
-    @SimpleEvent()
-    public void LayoutClosed(){
-        EventDispatcher.dispatchEvent(this, "LayoutClosed");
-    }
-    @SimpleEvent()
-    public void LayoutUpdated(){
-        EventDispatcher.dispatchEvent(this, "LayoutUpdated");
-    }
-    @SimpleEvent()
-    public void LayoutStartedOpening(){
-        EventDispatcher.dispatchEvent(this, "LayoutStartedOpening");
-    }
-    @SimpleEvent()
-    public void SwipeLayoutOpened(){
-        EventDispatcher.dispatchEvent(this, "SwipeLayoutOpened");
-    }
-    @SimpleEvent()
-    public void StartedClosing(){
-        EventDispatcher.dispatchEvent(this, "StartedClosing");
-    }
-    @SimpleEvent()
-    public void HandReleased(){
-        EventDispatcher.dispatchEvent(this, "HandReleased");
-    }
+          @Override
+          public void onOpen(SwipeLayout swipeLayout) {
+
+          }
+
+          @Override
+          public void onStartClose(SwipeLayout swipeLayout) {
+
+          }
+
+          @Override
+          public void onClose(SwipeLayout swipeLayout) {
+
+          }
+
+          @Override
+          public void onUpdate(SwipeLayout swipeLayout, int i, int i1) {
+
+          }
+
+          @Override
+          public void onHandRelease(SwipeLayout swipeLayout, float v, float v1) {
+
+          }
+      });
+
+
+  }
+
+
 }
